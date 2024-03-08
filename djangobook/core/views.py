@@ -35,3 +35,23 @@ def signup(request):
             return redirect('signup')
     else:
         return render(request, 'signup.html')
+
+
+def signin(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password= request.POST['password']
+        user= User.objects.filter(username=username).first()
+
+        if user is None:
+            messages.error(request, 'Username does not exist')
+            return redirect('signin')
+        else:
+            if user.check_password(password):
+                return redirect('signin')
+            else:
+                messages.error(request, 'Incorrect username or password')
+                return redirect('signin')
+            
+    else:
+        return render(request, 'signin.html')
