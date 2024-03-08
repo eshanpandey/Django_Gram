@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Profile
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='/signin')
+
+@login_required(login_url='signin')
 def index(request):
     return render(request, 'index.html')
 
@@ -27,8 +28,14 @@ def signup(request):
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
-                messages.success(request, 'User created successfully')
-                #log user in and send them to settings page
+                user_login=auth.authenticate(username=username,password=password)
+                auth.login(request,user_login)
+
+                
+               
+                  
+
+
                 #create profile for user
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model,id_user=user_model.id)
@@ -61,6 +68,12 @@ def signin(request):
     else:
         return render(request, 'signin.html')
 
+
+@login_required(login_url='signin')
 def logout(request):
     auth.logout(request)
     return redirect('signin')
+
+@login_required(login_url='signin')
+def settings(request):
+    return render(request, 'settings.html')
