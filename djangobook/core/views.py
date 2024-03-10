@@ -80,3 +80,11 @@ def settings(request):
         return redirect('settings')
 
     return render(request, 'settings.html', {'user_profile': user_profile})
+
+
+
+
+
+@login_required(login_url='signin')
+def upload(request):
+    return render('<h1>upload</h1>')
